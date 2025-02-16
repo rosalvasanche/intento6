@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendamos el Abecedario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body background ="ed9f1fb96967da68a9aa94f4b41a0208.jpg">
+    <div class="container">
+        <h1>Aprendamos el Abecedario</h1>
+        <div id="letra" class="letra"></div>
+        <button onclick="location.href='index.html'">Volver</button>
+        <button id="aleatorioButton" onclick="mostrarLetraAleatoria()">Aleatorio</button>
+        <button id="ordenadoButton" style="display: none;" onclick="mostrarLetraOrdenada()">Ordenado</button>
+        <button id="playButton" onclick="playAudio()">Reproducir</button> <button id="pauseButton" style="display: none;" onclick="pauseAudio()">Pausar</button>
+    </div>
+
+    <script>
+        const letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+        const letraDiv = document.getElementById('letra');
+        let i = 0;
+        let modoAleatorio = false;
+        let audio = new Audio('imagen/abecedario-en-espanol-para-ninos-videos-aprende-spanishlessons-spanish-sp_oBqRhfOd.mp3'); // Crea un nuevo objeto de audio
+        let intervalo;
+        let audioPlaying = false;
+
+        function mostrarLetra() {
+            letraDiv.textContent = letras[i];
+            letraDiv.style.textAlign = 'center';
+            i = (i + 1) % letras.length; // Ciclo para que vuelva al inicio
+            if (i === 0) { // Si se termina de reproducir todo el abecedario
+                playAudio(); // Se vuelve a reproducir desde el principio
+            }
+        }
+
+        function mostrarLetraAleatoria() {
+            modoAleatorio = true;
+            let randomIndex = Math.floor(Math.random() * letras.length);
+            letraDiv.textContent = letras[randomIndex];
+            letraDiv.style.textAlign = 'center';
+            audio.currentTime = 0; // Reinicia el audio
+            audio.play(); // Reproduce el audio
+            document.getElementById('aleatorioButton').style.display = 'none';
+            document.getElementById('ordenadoButton').style.display = 'inline-block';
+            clearInterval(intervalo);
+            intervalo = setInterval(mostrarLetraAleatoria, 3000); // Cambia la letra cada 5 segundos
+        }
+
+        function mostrarLetraOrdenada() {
+            modoAleatorio = false;
+            i = 0;
+            mostrarLetra();
+            document.getElementById('ordenadoButton').style.display = 'none';
+            document.getElementById('aleatorioButton').style.display = 'inline-block';
+            clearInterval(intervalo);
+            intervalo = setInterval(mostrarLetra, 3000);
+        }
+
+        function playAudio() {
+            audioPlaying = true;
+            if (audio.paused) { // Si el audio ya está en reproducción, no se reinicia
+                audio.play(); // Continúa la reproducción
+            } else {
+                audio.currentTime = 0; // Reinicia el audio
+                audio.play(); // Reproduce el audio
+            }
+            document.getElementById('playButton').style.display = 'none';
+            document.getElementById('pauseButton').style.display = 'inline-block';
+            mostrarLetra(); // Inicia la reproducción de letras
+            intervalo = setInterval(mostrarLetra, 3000);
+        }
+
+        function pauseAudio() {
+            audioPlaying = false;
+            clearInterval(intervalo);
+            audio.pause(); // Pausar el audio
+            document.getElementById('playButton').style.display = 'inline-block';
+            document.getElementById('pauseButton').style.display = 'none';
+        }
+
+        //let intervalo = setInterval(mostrarLetra, 3000);
+        //mostrarLetra();
+
+        document.getElementById('ordenadoButton').addEventListener('click', mostrarLetraOrdenada);
+        document.getElementById('aleatorioButton').addEventListener('click', mostrarLetraAleatoria);
+    </script>
+</body>
+</html>
